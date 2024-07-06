@@ -20,10 +20,13 @@ const AuthLayout = (props) => {
 const Navigation = ({type}) => {
     if (type === 'login'){
         return (
-            <p className="mt-8 mb-5 text-center text-gray-500">
-                Don't have an account?
-                <Link to="/register" className="text-yellow-500 hover:text-yellow-700 ms-2">Register</Link>  
-            </p>
+            <>
+                <p className="mt-8 mb-5 text-center text-gray-500">
+                    Don't have an account?
+                    <Link to="/register" className="text-yellow-500 hover:text-yellow-700 ms-2">Register</Link>  
+                </p>
+                <Link to="/forget/password" className="text-sky-500 hover:text-sky-700 ms-2">Forget Password?</Link>
+            </>
         );
     } else if (type === 'register') {
         return (
