@@ -39,7 +39,7 @@ const CardInfo = () => {
                             <SwiperSlide key={item.id}>
                                 <p className="font-bold text-sky-500">{item.title}</p>
                                 <img src={item.image} alt="" className="h-24 mx-auto"/>
-                                <p className={`font-black text-5xl text-green-500 ${item.fillColor}`}>{item.fill}</p>
+                                <p className={`font-black text-5xl ${item.fillColor}`}>{item.fill}</p>
                             </SwiperSlide>
                         ))}
                     </Swiper>

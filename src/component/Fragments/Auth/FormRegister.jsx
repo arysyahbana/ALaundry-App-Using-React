@@ -53,8 +53,10 @@ import { useEffect, useRef, useState } from "react";
 import Button from "../../Elements/Button";
 import InputForm from "../../Elements/Input";
 import { register } from "../../../services/auth.service";
+import toast from "react-hot-toast";
 
 const FormRegister = () => {
+    const [isLoading, setIsLoading] = useState(false);
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -78,11 +80,16 @@ const FormRegister = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         const dataToSubmit = { ...formData, role: 'user' };
+        setIsLoading(true);
         // console.log("Form Data:", dataToSubmit);
         register(dataToSubmit, (success, data) => {
             if (success) {
-                console.log("Registration successful", data);
+                setTimeout(() => {
+                    sessionStorage.setItem("registerSuccess", "true")
+                    window.location.href = '/login';
+                }, 2000);
             } else {
+                toast.error("Registration failed!");
                 console.error("Registration failed", data);
             }
         });
@@ -116,7 +123,15 @@ const FormRegister = () => {
                 onChange={handleChange}
             />
             <div className="text-end">
-                <Button type="submit" className="bg-yellow-400 text-white rounded-xl hover:bg-yellow-600 px-5 py-2 shadow">Register</Button>
+                {isLoading ? 
+                    <Button type="submit" className="bg-yellow-400 text-white rounded-xl hover:bg-yellow-600 px-5 py-2 shadow">
+                        <div className="flex gap-2">
+                            <img src="/public/images/loading2.gif" alt="" className="h-4 mt-1" />
+                            <span>Registering...</span>
+                        </div>
+                    </Button> : 
+                    <Button type="submit" className="bg-yellow-400 text-white rounded-xl hover:bg-yellow-600 px-5 py-2 shadow">Register</Button>
+                }
             </div>
         </form>
     );

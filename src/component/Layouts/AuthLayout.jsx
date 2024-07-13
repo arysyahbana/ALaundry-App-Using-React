@@ -4,8 +4,9 @@ import FormLogin from "../Fragments/Auth/FormLogin"
 const AuthLayout = (props) => {
     const {children, textColor, title, type} = props;
     return(
-        <div className={`bg-slate-200 w-full min-h-screen flex items-center`}>
-            <div className="bg-white rounded-xl mx-auto w-[25%] p-5 shadow-lg">
+        <div className={`bg-gray-400 w-full min-h-screen flex flex-wrap justify-center items-center gap-10`}>
+            <img src="/public/images/login.svg" alt="" className="order-2 lg:order-1 mb-96 lg:mb-0"/>
+            <div className="absolute lg:relative bg-white rounded-xl lg:w-[25%] p-5 shadow-lg shadow-xl order-1 lg:order-2">
                 <div className="flex justify-between mb-5">
                     <span className={`font-semibold ${textColor} text-xl pt-2`}>{title} To App</span>
                     <img src="/public/images/logoBiru.svg" alt="" className="h-12"/>
@@ -25,7 +26,6 @@ const Navigation = ({type}) => {
                     Don't have an account?
                     <Link to="/register" className="text-yellow-500 hover:text-yellow-700 ms-2">Register</Link>  
                 </p>
-                <Link to="/forget/password" className="text-sky-500 hover:text-sky-700 ms-2">Forget Password?</Link>
             </>
         );
     } else if (type === 'register') {

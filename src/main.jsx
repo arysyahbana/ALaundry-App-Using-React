@@ -8,6 +8,8 @@ import RegisterPage from './pages/register.jsx'
 import { Toaster } from 'react-hot-toast'
 import SubmitForgetPage from './pages/submit-forget.jsx'
 import ForgetPasswordPage from './pages/forget-password.jsx'
+import ProfilePage from './pages/profile.jsx'
+import DarkModeContextProvider from './context/DarkMode.jsx'
 
 
 const router = createBrowserRouter([
@@ -30,12 +32,18 @@ const router = createBrowserRouter([
   {
     path: '/submit/forget/:token',
     element: <SubmitForgetPage />
+  },
+  {
+    path: '/profile/:id',
+    element: <ProfilePage />
   }
 ])
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <Toaster />
-    <RouterProvider router={router} />
+    <DarkModeContextProvider>
+      <Toaster />
+      <RouterProvider router={router} />
+    </DarkModeContextProvider>
   </React.StrictMode>,
 )

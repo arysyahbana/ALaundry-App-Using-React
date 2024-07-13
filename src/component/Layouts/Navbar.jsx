@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react"
+import { useContext, useEffect, useRef, useState } from "react"
 import Button from "../Elements/Button"
 import { Link } from "react-router-dom"
 // import { useLogin } from "../../hooks/useLogin"
@@ -6,7 +6,9 @@ import toast from "react-hot-toast"
 import { useLogout } from "../../hooks/useLogout"
 import { getId } from "../../services/auth.service"
 import { fetchUserData } from "../../services/auth.service"
-import gsap from "gsap"
+import { FaSun } from "react-icons/fa";
+import { IoMdMoon } from "react-icons/io";
+import { DarkMode } from "../../context/DarkMode"
 
 const Navbar = () => {
     const [isNavbarVisible, setIsNavbarVisible] = useState(false)
@@ -14,7 +16,9 @@ const Navbar = () => {
     const logout = useLogout();
     const [userData, setUserData] = useState(null);
     const token = localStorage.getItem("token");
-     const navbarRef = useRef();
+    const navbarRef = useRef();
+    const userId = token ? getId(token) : null;
+    const {isDarkMode, setIsDarkMode} = useContext(DarkMode);
     
     // TOAST LOGIN SUCCESS
     useEffect(() => {
@@ -27,10 +31,13 @@ const Navbar = () => {
     // LOGOUT
     const handleLogout = async () => {
         try {
-        await logout();
-        toast.success("Logout success");
+            await logout();
+            setTimeout(() => {
+                window.location.href = '/';
+            }, 1000);
+            toast.success("Logout success");
         } catch (error) {
-        toast.error("Logout failed");
+            toast.error("Logout failed");
         }
     };
 
@@ -52,12 +59,8 @@ const Navbar = () => {
     
     // BURGER CLICK
     const handleBurgerClick = () => {
-        setIsNavbarVisible(!isNavbarVisible)
+        setIsNavbarVisible(!isNavbarVisible);
     }
-
-    useEffect(() => {
-        gsap.to(navbarRef.current, { y: 0, opacity: 1, duration: 0.5, ease: "power2.out" });
-    }, []);
 
     // GET DATA USER
    useEffect(() => {
@@ -93,13 +96,13 @@ const Navbar = () => {
 
     return (
          <>
-            <nav className={`navbar flex flex-wrap md:flex-row justify-between py-5 px-10 top-0 fixed top-0 w-full z-30 ${isScrolled ? 'bg-white shadow-lg' : 'bg-transparent'}`}>
+            <nav className={`navbar flex flex-wrap md:flex-row justify-between py-5 px-10 top-0 fixed w-full z-30 ${isScrolled ? 'bg-white shadow-lg' : 'bg-transparent'}`}>
                 <img src={isScrolled ? "public/images/logoBiru.svg" : "public/images/logo.svg"} alt="" className="h-12"/>
                 <div className="flex justify-center gap-10 font-semibold text-lg mt-3">
-                    <a href="#Home" className=" text-[#373A40] hover:text-white hidden lg:block">Home</a>
-                    <a href="#About" className=" text-[#373A40] hover:text-white hidden lg:block">About</a>
-                    <a href="#Service" className=" text-[#373A40] hover:text-white hidden lg:block">Services</a>
-                    <a href="#Price" className=" text-[#373A40] hover:text-white hidden lg:block">Price</a>
+                    <a href="#Home" className={` text-[#373A40] hidden lg:block hover:${isScrolled ? 'text-yellow-400' : 'text-white'}`}>Home</a>
+                    <a href="#About" className={` text-[#373A40] hidden lg:block hover:${isScrolled ? 'text-yellow-400' : 'text-white'}`}>About</a>
+                    <a href="#Service" className={` text-[#373A40] hidden lg:block hover:${isScrolled ? 'text-yellow-400' : 'text-white'}`}>Services</a>
+                    <a href="#Price" className={` text-[#373A40] hidden lg:block hover:${isScrolled ? 'text-yellow-400' : 'text-white'}`}>Price</a>
                 </div>
                 <div className="hidden lg:block">
                     {userData ? (
@@ -112,7 +115,12 @@ const Navbar = () => {
                             <Button className="bg-yellow-400 px-6 py-2 font-semibold text-white shadow-lg rounded-lg hover:bg-yellow-600"> Login </Button>
                         </Link>
                     )}
-                    <Button className={`bg-sky-500 px-8 py-2 text-white rounded-lg hover:bg-sky-600 ms-1`}>Dark</Button>
+                    <Button className={`bg-sky-500 p-3 text-white rounded-lg hover:bg-sky-600 ms-1`} onClick={() => setIsDarkMode(!isDarkMode)}>
+                        {isDarkMode ? <IoMdMoon /> : <FaSun />}
+                    </Button>
+                    <Link to={`/profile/${userId}`}>
+                        <Button className={`bg-green-500 px-8 py-2 text-white rounded-lg hover:bg-green-600 ms-1`}>Profile</Button>
+                    </Link>
                 </div>
                 <button className="lg:hidden" onClick={handleBurgerClick}>
                     <img src="/images/burger.svg" alt="" className={`h-8 ${isScrolled ? 'hidden' : 'block'}`}/>
@@ -121,7 +129,7 @@ const Navbar = () => {
             </nav>
 
             {isNavbarVisible && (
-                <div ref={navbarRef} className="fixed inset-0 h-60 top-[7%] left-[31%] bg-white border-2 w-[40%] text-center flex flex-col p-5 rounded-xl z-20 transition-opacity duration-500 ease-in-out mt-10 shadow-xl lg:hidden">
+                <div ref={navbarRef} className="fixed inset-0 h-72 top-[6%] bg-white border-2 w-full text-center flex flex-col p-5 rounded-xl z-20 transition-opacity duration-500 ease-in-out mt-10 shadow-xl lg:hidden">
                     <div className="flex flex-col justify-center gap-4 text-sm mt-3">
                         {userData ? (
                         <>
@@ -132,7 +140,9 @@ const Navbar = () => {
                             <a href="#Price" className=" text-[#373A40] hover:text-yellow-400">Price</a>
                             <div className="flex justify-center">
                                 <Button className="bg-indigo-400 px-6 py-2 font-semibold text-white shadow-lg rounded-lg hover:bg-indigo-600" onClick={handleLogout}> Logout </Button>
-                                <Button className={`bg-sky-500 px-8 py-2 text-white rounded-lg hover:bg-sky-600 ms-1`}>Dark</Button>
+                                <Button className={`bg-sky-500 p-3 text-white rounded-lg hover:bg-sky-600 ms-1`} onClick={() => setIsDarkMode(!isDarkMode)}>
+                                    {isDarkMode ? <IoMdMoon /> : <FaSun />}
+                                </Button>
                             </div>
                         </>
                             ):(
@@ -145,7 +155,9 @@ const Navbar = () => {
                                     <Link to="/login">
                                         <Button className="bg-yellow-400 px-6 py-2 font-semibold text-white shadow-lg rounded-lg hover:bg-yellow-600"> Login </Button>
                                     </Link>
-                                    <Button className={`bg-sky-500 px-8 py-2 text-white rounded-lg hover:bg-sky-600 ms-1`}>Dark</Button>
+                                    <Button className={`bg-sky-500 p-3 text-white rounded-lg hover:bg-sky-600 ms-1`} onClick={() => setIsDarkMode(!isDarkMode)}>
+                                        {isDarkMode ? <IoMdMoon /> : <FaSun />}
+                                    </Button>
                                 </div>
                                 </>
                             )}

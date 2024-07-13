@@ -60,4 +60,20 @@ export const fetchUserData = async (userId, token) => {
     return res.data;
 }
 
+// UPDATE USER DATA
+export const updateUser = async (data, userId, token) => {
+    try {
+        const response = await axios.post(`https://express-laundry.vercel.app/user/update/${userId}`, data, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+        console.log(response.data)
+        return response.data;
+    } catch (error) {
+        console.error("Gagal mengupdate data pengguna:", error);
+        throw error;
+    }
+};
 
